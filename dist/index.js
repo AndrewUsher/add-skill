@@ -459,11 +459,14 @@ async function main(source, options) {
           p2.log.info(`Installing to: ${installedAgents.map((a) => chalk.cyan(agents[a].displayName)).join(", ")}`);
         }
       } else {
-        const agentChoices = installedAgents.map((a) => ({
-          value: a,
-          label: agents[a].displayName,
-          hint: `${options.global ? agents[a].globalSkillsDir : agents[a].skillsDir}`
-        }));
+        const agentChoices = installedAgents.map((a) => {
+          const config = getAgentConfig(a, customDirs);
+          return {
+            value: a,
+            label: config.displayName,
+            hint: `${options.global ? config.globalSkillsDir : config.skillsDir}`
+          };
+        });
         const selected = await p2.multiselect({
           message: "Select agents to install skills to",
           options: agentChoices,
